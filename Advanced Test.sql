@@ -405,3 +405,345 @@ Find the total number of customers in each customer segment.*/
 SELECT
 COUNT(customer_segment)  AS Total_NO_Of_Customers
 FROM Customers;
+
+
+/*24*/
+SELECT
+    p.category,
+    p.product_id,
+    p.product_name,
+    SUM(o.quantity) AS total_quantity_sold
+FROM Products p
+JOIN Orders o
+    ON p.product_id = o.product_id
+WHERE o.order_status <> 'Cancelled'
+GROUP BY p.category, p.product_id, p.product_name
+HAVING SUM(o.quantity) >= ALL (
+    SELECT SUM(o2.quantity)
+    FROM Products p2
+    JOIN Orders o2
+        ON p2.product_id = o2.product_id
+    WHERE p2.category = p.category
+      AND o2.order_status <> 'Cancelled'
+    GROUP BY p2.product_id
+);
+
+
+
+
+/*25*/
+SELECT
+    c.customer_name,
+    o.order_id,
+    o.order_status,
+    p.paid_amount,
+    p.payment_status
+FROM Customers c
+JOIN Orders o
+    ON c.customer_id = o.customer_id
+JOIN Payments p
+    ON o.order_id = p.order_id;
+
+
+
+
+/*26*/
+SELECT
+    o.order_id,
+    o.customer_id,
+    o.order_status,
+    p.paid_amount,
+    p.payment_status
+FROM Orders o
+JOIN Payments p
+    ON o.order_id = p.order_id
+WHERE o.order_status = 'Completed'
+  AND p.payment_status <> 'Paid';
+
+
+
+
+
+/*27*/
+SELECT DISTINCT
+    c.customer_id,
+    c.customer_name
+FROM Customers c
+JOIN Orders o
+    ON c.customer_id = o.customer_id
+LEFT JOIN SupportTickets st
+    ON c.customer_id = st.customer_id
+WHERE st.ticket_id IS NULL;
+
+
+
+
+/*28*/
+SELECT DISTINCT
+    c.customer_id,
+    c.customer_name
+FROM Customers c
+JOIN SupportTickets st
+    ON c.customer_id = st.customer_id
+LEFT JOIN Orders o
+    ON c.customer_id = o.customer_id
+WHERE o.order_id IS NULL;
+
+
+
+
+/*29*/
+SELECT
+    e.employee_id,
+    e.employee_name,
+    e.department,
+    COUNT(st.ticket_id) AS ticket_count
+FROM Employees e
+LEFT JOIN SupportTickets st
+    ON e.employee_id = st.employee_id
+GROUP BY
+    e.employee_id,
+    e.employee_name,
+    e.department;
+
+
+/*30*/
+SELECT
+    e.employee_id,
+    e.employee_name,
+    COUNT(st.ticket_id) AS ticket_count
+FROM Employees e
+JOIN SupportTickets st
+    ON e.employee_id = st.employee_id
+WHERE e.department = 'Support'
+GROUP BY e.employee_id, e.employee_name
+HAVING COUNT(st.ticket_id) > 2;
+
+
+/*31*/
+SELECT
+    c.customer_name,
+    o.order_id,
+    p.product_name,
+    e.employee_name AS sales_employee_name,
+    e.department,
+    o.quantity,
+    o.quantity * p.unit_price AS total_order_value
+FROM Customers c
+JOIN Orders o
+    ON c.customer_id = o.customer_id
+JOIN Products p
+    ON o.product_id = p.product_id
+JOIN Employees e
+    ON o.sales_employee_id = e.employee_id;
+
+
+
+/*32*/
+SELECT
+    e.employee_id,
+    e.employee_name,
+    SUM(o.quantity * p.unit_price) AS total_revenue
+FROM Employees e
+JOIN Orders o
+    ON e.employee_id = o.sales_employee_id
+JOIN Products p
+    ON o.product_id = p.product_id
+WHERE e.department = 'Sales'
+  AND o.order_status = 'Completed'
+GROUP BY e.employee_id, e.employee_name;
+
+
+
+
+/*33*/
+SELECT
+    e.employee_id,
+    e.employee_name,
+    SUM(o.quantity * p.unit_price) AS completed_revenue
+FROM Employees e
+JOIN Orders o
+    ON e.employee_id = o.sales_employee_id
+JOIN Products p
+    ON o.product_id = p.product_id
+WHERE e.department = 'Sales'
+  AND o.order_status = 'Completed'
+GROUP BY e.employee_id, e.employee_name
+HAVING SUM(o.quantity * p.unit_price) > 500000;
+
+
+
+
+/*34*/
+SELECT
+    c.city,
+    SUM(o.quantity * p.unit_price) AS completed_sales_value
+FROM Customers c
+JOIN Orders o
+    ON c.customer_id = o.customer_id
+JOIN Products p
+    ON o.product_id = p.product_id
+WHERE o.order_status = 'Completed'
+GROUP BY c.city;
+
+
+
+/*35*/
+SELECT
+    c.city,
+    SUM(o.quantity * p.unit_price) AS completed_sales_value
+FROM Customers c
+JOIN Orders o
+    ON c.customer_id = o.customer_id
+JOIN Products p
+    ON o.product_id = p.product_id
+WHERE o.order_status = 'Completed'
+GROUP BY c.city
+HAVING SUM(o.quantity * p.unit_price) > 300000;
+
+
+
+/**/
+
+
+
+
+/*Q38 */
+SELECT
+    e.employee_id,
+    e.employee_name,
+    e.department,
+    o.order_id,
+    o.customer_id,
+    o.product_id,
+    o.quantity,
+    o.order_date,
+    o.order_status
+FROM Orders o
+RIGHT JOIN Employees e
+    ON o.sales_employee_id = e.employee_id
+ORDER BY e.employee_id, o.order_id;
+
+
+/*Q39*/
+SELECT
+    cs.customer_segment,
+    p.category
+FROM
+    (SELECT DISTINCT customer_segment FROM Customers) cs
+CROSS JOIN
+    (SELECT DISTINCT category FROM Products) p
+ORDER BY cs.customer_segment, p.category;
+
+
+/*Q40*/
+SELECT
+    e.employee_name,
+    p.category
+FROM Employees e
+CROSS JOIN
+    (SELECT DISTINCT category FROM Products) p
+WHERE e.department = 'Sales'
+ORDER BY e.employee_name, p.category;
+
+
+/*Q41*/
+SELECT
+    p.category,
+    COUNT(DISTINCT o.customer_id) AS distinct_customers
+FROM Products p
+JOIN Orders o
+    ON p.product_id = o.product_id
+WHERE o.order_status <> 'Cancelled'
+GROUP BY p.category;
+
+
+/*Q42*/
+SELECT
+    p.category,
+    COUNT(DISTINCT o.customer_id) AS distinct_customers
+FROM Products p
+JOIN Orders o
+    ON p.product_id = o.product_id
+WHERE o.order_status <> 'Cancelled'
+GROUP BY p.category
+HAVING COUNT(DISTINCT o.customer_id) >= 5;
+
+
+/*Q43*/
+SELECT
+    c.customer_id,
+    c.customer_name,
+    COUNT(DISTINCT o.product_id) AS different_products
+FROM Customers c
+JOIN Orders o
+    ON c.customer_id = o.customer_id
+WHERE o.order_status <> 'Cancelled'
+GROUP BY c.customer_id, c.customer_name
+HAVING COUNT(DISTINCT o.product_id) >= 3;
+
+
+/*Q44*/
+SELECT
+    c.customer_segment,
+    AVG(o.quantity * p.unit_price) AS avg_completed_order_value
+FROM Customers c
+JOIN Orders o
+    ON c.customer_id = o.customer_id
+JOIN Products p
+    ON o.product_id = p.product_id
+WHERE o.order_status = 'Completed'
+GROUP BY c.customer_segment;
+
+
+/*Q45*/
+SELECT
+    c.customer_segment,
+    AVG(o.quantity * p.unit_price) AS avg_completed_order_value
+FROM Customers c
+JOIN Orders o
+    ON c.customer_id = o.customer_id
+JOIN Products p
+    ON o.product_id = p.product_id
+WHERE o.order_status = 'Completed'
+GROUP BY c.customer_segment
+HAVING AVG(o.quantity * p.unit_price) > 50000;
+
+
+/*Q46*/
+SELECT
+    e.employee_id,
+    e.employee_name,
+    e.department,
+    COUNT(o.order_id) AS completed_orders,
+    SUM(o.quantity) AS total_quantity_sold,
+    SUM(o.quantity * p.unit_price) AS total_revenue,
+    AVG(o.quantity * p.unit_price) AS average_order_value
+FROM Employees e
+JOIN Orders o
+    ON e.employee_id = o.sales_employee_id
+JOIN Products p
+    ON o.product_id = p.product_id
+WHERE e.department = 'Sales'
+  AND o.order_status = 'Completed'
+GROUP BY
+    e.employee_id,
+    e.employee_name,
+    e.department;
+
+
+/**/
+
+/**/
+
+/**/
+
+
+
+
+
+
+
+
+
+
