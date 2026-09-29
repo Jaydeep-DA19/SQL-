@@ -89,10 +89,11 @@ Order_Date,
 Customer_ID,
 Customer_Name,
 Product_ID,
-Product_Name
+Product_Name,
+Sub_Category
 FROM samplesuperstore
-WHERE Product_Name LIKE '%Chair';  /* USE LIKE Clause when to find any particular word  WITH % */
-
+WHERE Sub_Category LIKE '%Chair%';  /* USE LIKE Clause when to find any particular word  WITH % */
+-- WHERE Sub_catgeory = 'chair', --
 
 /* Level 2 — Sorting & DISTINCT */
 
@@ -176,16 +177,255 @@ ORDER BY Sales DESC;
 
 /* Level 3 — Aggregate Functions */
 
-SELECT * FROM samplesuperstore;
+
+
+/* 19. Find the total sales.*/
+ 
+ SELECT 
+ SUM(Sales) AS Total_Sales
+ FROM samplesuperstore;
+
+/* 20. Find the total profit. */
+
+ SELECT 
+ SUM(Profit) AS Total_Profit
+ FROM samplesuperstore;
+
+/* 21. Find the average sales.*/
+
+SELECT
+AVG(Sales) AS Average_Sales
+FROM samplesuperstore;
+
+/* 22. Find the average profit.*/
+
+SELECT
+AVG(Profit) AS Average_Profit
+FROM samplesuperstore;
+
+/* 23. Find the minimum and maximum sales.*/
+
+SELECT
+MIN(Sales) AS Minimum_Sales,
+MAX(Sales) AS Maximum_Sales
+FROM samplesuperstore;
+
+/* 24. Find the minimum and maximum profit.*/
+
+SELECT
+MIN(Profit) AS Minimum_profit,
+MAX(Profit) AS Maximum_profit
+FROM samplesuperstore;
+
+
+/* 25. Count the total number of records.*/
+
+SELECT
+COUNT(Order_ID) AS total_number_of_records
+FROM samplesuperstore;
+
+/* 26. Count the number of unique customers. */
+
+SELECT 
+DISTINCT COUNT(Customer_Name) AS Unique_customers
+FROM samplesuperstore;
+
+/* 27. Count the number of unique products. */
+
+SELECT
+DISTINCT COUNT(Product_Name) AS Unique_Products
+FROM samplesuperstore;
+
+
+/* 28. Find the total quantity sold. */
+
+SELECT
+SUM(Quantity) AS Total_quantity_sold
+FROM samplesuperstore;
+
+
+
+
+/* Level 4 — GROUP BY  */
+
+
+
+/* 29. Find total sales by category. */
+
+SELECT Category,
+SUM(Sales) AS Total_sales_by_category
+FROM samplesuperstore
+GROUP BY Category;
+
+
+/* 30. Find total profit by category. */
+
+SELECT Category,
+SUM(Profit) AS Total_profit_by_catgeory
+FROM samplesuperstore
+GROUP BY Category;
+
+/* 31. Find average sales by category.*/
+
+SELECT Category,
+AVG(Sales) AS Average_sales_by_category
+FROM samplesuperstore 
+GROUP BY Category;
+
+
+/* 32. Find total sales by sub-category. */
+
+SELECT Sub_Category,
+SUM(Sales) AS Total_sales_by_subcategory
+FROM samplesuperstore
+GROUP BY Sub_Category;
+
+/* 33. Find total profit by sub-category.*/
+
+SELECT Sub_Category,
+SUM(Profit) AS Total_profit_by_subcategory
+FROM samplesuperstore
+GROUP BY Sub_Category;
+
+/* 34. Find total sales by region. */
+
+SELECT Region,
+SUM(Sales) AS Total_sales_by_region
+FROM samplesuperstore
+GROUP BY Region;
+
+
+/* 35. Find total profit by region.*/
+
+SELECT Region,
+SUM(Profit) AS Total_profit_by_region
+FROM samplesuperstore
+GROUP BY Region;
+
+/* 36. Find total sales by customer segment.*/
+
+SELECT Segment,
+SUM(Sales) AS Total_sales_by_customer_segment
+FROM samplesuperstore
+GROUP BY Segment; 
+
+/* 37. Find total quantity sold by category. */
+
+	SELECT Category,
+	SUM(Quantity) AS Total_quantity_sold_by_category
+	FROM samplesuperstore
+	GROUP BY Category;
+
+
+-- SELECT * FROM samplesuperstore; --
+
+
+/* 38. Find the number of orders for each ship mode. */
+
+SELECT Ship_Mode,
+COUNT(Order_ID) AS Number_of_orders_for_each_ship_mode
+FROM samplesuperstore
+GROUP BY Ship_Mode;
+
+/* 39. Find the number of customers in each segment.*/
+
+SELECT Segment,
+COUNT(Customer_ID) AS Number_of_customers
+FROM samplesuperstore
+GROUP BY Segment;
+
+
+/* 40. Find total sales by state.*/
+
+SELECT State_Province,
+SUM(SALES) AS Total_sales_by_state
+FROM samplesuperstore
+GROUP BY State_Province;
+
+
+/* Level 5 — HAVING  */
+
+
+
+/* 41. Find categories whose total sales are greater than 100,000.  */
+
+SELECT Category,
+SUM(Sales) AS Total_sales
+FROM samplesuperstore
+GROUP BY Category
+HAVING SUM(Sales) > 100000;
+
+
+/* 42. Find sub-categories whose total profit is greater than 10,000. */
+
+SELECT Sub_Category,
+SUM(Profit) AS Total_profit
+FROM samplesuperstore
+GROUP BY Sub_Category
+HAVING SUM(Profit) > 10000;
+
+
+/* 43. Find customers whose total sales exceed 5,000. */
+
+SELECT Customer_Name,
+SUM(Sales) AS Total_sales
+FROM samplesuperstore
+GROUP BY Customer_Name
+HAVING SUM(Sales) > 5000;
+
+/* 44. Find states whose total sales exceed 50,000. */
+
+SELECT State_Province,
+SUM(Sales) AS Total_sales
+FROM samplesuperstore
+GROUP BY State_Province
+HAVING SUM(Sales) > 50000;
+
+
+/* 45. Find products whose total sales exceed 10,000.*/
+
+
+
+/* 46. Find categories having an average discount greater than 20%. */
+
+
+
+/* 47. Find customers who have placed more than 10 orders. */
+
+
+
+/* 48. Find sub-categories with total profit below 0.   */
+
+
 
 /**/
 
 
-/**/
-
 
 /**/
 
 
+
+/**/
+
+
+
+/**/
+
+
+
+/**/
+
+
+
+/**/
+
+
+
+/**/
+
+
+
+/**/
 
 
