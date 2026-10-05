@@ -317,9 +317,6 @@ GROUP BY Segment;
 	GROUP BY Category;
 
 
--- SELECT * FROM samplesuperstore; --
-
-
 /* 38. Find the number of orders for each ship mode. */
 
 SELECT Ship_Mode,
@@ -384,48 +381,137 @@ HAVING SUM(Sales) > 50000;
 
 /* 45. Find products whose total sales exceed 10,000.*/
 
+SELECT Product_Name,
+SUM(Sales) AS Total_sales
+FROM samplesuperstore
+GROUP BY Product_Name
+HAVING SUM(Sales) > 10000;
 
 
 /* 46. Find categories having an average discount greater than 20%. */
 
+SELECT  Category,
+AVG(Discount) AS Average_Discount
+FROM samplesuperstore
+GROUP BY Category
+HAVING AVG(Discount) > 20;
 
 
 /* 47. Find customers who have placed more than 10 orders. */
 
-
+SELECT Customer_ID, 
+Customer_Name,
+COUNT(Order_ID) AS Total_Orders
+FROM samplesuperstore
+GROUP BY
+Customer_ID,
+Customer_Name
+HAVING COUNT(Order_ID) > 10;
 
 /* 48. Find sub-categories with total profit below 0.   */
 
+SELECT Sub_Category,
+SUM(Profit) AS Total_Profit
+FROM samplesuperstore
+GROUP BY Sub_Category
+HAVING SUM(Profit) < 0;
+
+-- Level 6 — CASE --
 
 
-/**/
+/* 49. Create a column called Profit_Status:
+
+   Profit > 0      → Profitable  
+   Profit < 0      → Loss  
+   Profit = 0      → No Profit     */
+
+   SELECT
+   Customer_ID,
+   Customer_Name,
+   CASE 
+	WHEN Profit > 0 THEN 'Profitable'
+	WHEN Profit < 0 THEN  'Loss'
+	ELSE 'No Profit'
+	END AS Profit_Status			
+   FROM samplesuperstore;
+
+
+/* 50. Create a Sales_Category:
+
+ Sales < 100       → Low  
+  100–500           → Medium  
+  501–1000          → High 
+  >1000             → Very High  */
+
+  SELECT Product_Name,
+  CASE
+	WHEN Sales < 100 THEN 'Low' 
+	WHEN  SALES BETWEEN 100 AND 500 THEN 'Medium'
+	WHEN  SALES BETWEEN 501 AND 1000 THEN 'High'
+	WHEN Sales > 1000  THEN 'Very High'
+	END AS Sales_catgeory
+  FROM samplesuperstore;
+
+
+/* 51. Classify discounts into:
+
+ 0              → No Discount  
+ 0–10%          → Low  
+ 10–30%         → Medium  
+ >30%           → High   */
+
+
+ SELECT Product_Name,
+ CASE 
+	WHEN Discount = 0 THEN 'No Discount'
+	WHEN Discount BETWEEN 0 AND 10 THEN 'Low'
+	WHEN Discount BETWEEN 10 AND 30 THEN 'Medium'
+	WHEN Discount > 30 THEN 'High'
+	END AS Classify_Discount
+ FROM samplesuperstore;
+
+
+/* 52. Calculate total sales and classify each category based on total sales.*/
 
 
 
-/**/
+-- Level 7 — Multiple Conditions -- 
 
 
 
-/**/
+/* 53. Find Consumer customers from the West region. */
+
+SELECT 
+Customer_ID,
+Customer_Name,
+Region
+FROM samplesuperstore
+WHERE Segment = 'Consumer'
+AND  Region = 'West';
+
+
+ 
+
+/* 54. Find Technology products with sales above 1,000.  */
+
+SELECT Product_ID,
+Product_Name,
+Sales
+FROM samplesuperstore
+WHERE Category = 'Technology' 
+AND Sales > 1000;
+
+
+/* 55. Find orders where:
+*   Sales > 500
+*   Profit > 100
+*   Discount < 20%  */
 
 
 
-/**/
 
+SELECT * FROM samplesuperstore;
 
-
-/**/
-
-
-
-/**/
-
-
-
-/**/
-
-
-
-/**/
+/* 56. SELECT * FROM samplesuperstore */
 
 
